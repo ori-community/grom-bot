@@ -1,8 +1,6 @@
 import io
 import traceback
-
 import discord
-
 from src.api import api
 
 
@@ -18,21 +16,8 @@ class SeedgenCommand(discord.ui.View):
         "seed": None
     }
 
-    @discord.ui.select(
-        row=0,
-        placeholder="Choose a difficulty",
-        min_values=1,
-        max_values=1,
-        options=[
-            discord.SelectOption(label="Moki", value="Moki"),
-            discord.SelectOption(label="Gorlek", value="Gorlek"),
-            discord.SelectOption(label="Kii", value="Kii"),
-            discord.SelectOption(label="Unsafe", value="Unsafe"),
-        ]
-    )
-    async def difficulty_select_callback(self, select, interaction):
-        self.universe_preset["worldSettings"][0]["difficulty"] = select.values[0]
-        await interaction.response.defer(invisible=True)
+    def set_difficulty(self, difficulty):
+        self.universe_preset["worldSettings"][0]["difficulty"] = difficulty
 
     @discord.ui.select(
         row=1,
