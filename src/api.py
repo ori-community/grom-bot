@@ -1,5 +1,6 @@
 import config
 from uplink import Consumer, get, post, json, Body, returns
+from uplink.auth import BearerToken
 
 
 class OriRandoApi(Consumer):
@@ -8,6 +9,12 @@ class OriRandoApi(Consumer):
     @post("/api/seeds")
     def generate_seed(self, universe_preset: Body):
         """Generate a seed"""
+
+    @json
+    @returns.json
+    @post("/api/multiverses")
+    def create_multiverse(self, multiverse_creation_config: Body):
+        """Create a new multiverse"""
 
     @get("/api/world-seeds/{world_seed_id}/file")
     def get_world_seed_file(self, world_seed_id: int):
@@ -20,4 +27,4 @@ def get_base_url():
     return f'{protocol}://{host}'
 
 
-api = OriRandoApi(base_url=get_base_url())
+api = OriRandoApi(base_url=get_base_url(), auth=BearerToken(config.API_TOKEN))
