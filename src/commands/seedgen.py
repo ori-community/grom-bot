@@ -123,7 +123,9 @@ class RollSeedStep(SeedGeneratorCommand):
                 {
                     "spawn": "FullyRandom",
                     "difficulty": self.wizard.params.difficulty,
-                    "headers": self.wizard.params.headers
+                    "headers": self.wizard.params.headers,
+                    # TODO: Make this a selection
+                    "includes": ["qol", "rspawn", "moki" if self.wizard.params.difficulty == "Moki" else "gorlek"],
                 }
             ],
             "seed": None,
