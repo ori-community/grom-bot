@@ -1,22 +1,20 @@
 import math
-
 import discord
 import config
 from discord import option
-import asyncio
-import schedule
 import datetime
+import aiocron
 
 from commands.seedgen import SeedgenParameters, OnlineOfflineStep, SeedgenWizard
 
 bot = discord.Bot()
 
+SERVER_ID = 909423614108008448
+WEEKLY_CHANNEL_ID = 1079926942456881204
 
 @bot.event
 async def on_ready():
     print(f"{bot.user} is online")
-    await weekly_reminder()
-
 
 @bot.slash_command(name="roll", description="Roll a seed")
 @option("difficulty", description="Choose seed difficulty", choices=["Moki", "Gorlek", "Kii", "Unsafe"], required=False)
@@ -32,33 +30,19 @@ async def roll_seed(ctx: discord.ApplicationContext, difficulty: str, online_mod
 
     wizard = SeedgenWizard(params, ctx)
     await wizard.continue_wizard()
-
-
-async def weekly():
-    return
-    #schedule.every().saturday.at("12:00").do(await weekly_reminder())
-    # schedule.every().saturday.at("20:00").do(weekly_message())
-    # schedule.every().sunday.at("12:00").do(weekly_reminder())
-    # schedule.every().sunday.at("20:00").do(weekly_message())
-
+@aiocron.crontab("0 16 * * sat,sun")
 async def weekly_reminder():
-    channel = bot.get_channel(1079926942456881204)
-    weekly_time = datetime.datetime.today()
-    weekly_time = weekly_time.replace(hour=20, minute=00, second=00)
-    await channel.send(f"Weekly will be happening <t:{math.floor(weekly_time.timestamp())}:R> Don't forget to vote: *insert the vote link here*")
+    print("the weekly message should be sent now")
+    if bot.is_ready():
+        channel = bot.get_guild(SERVER_ID).get_channel_or_thread(WEEKLY_CHANNEL_ID)
+        weekly_time = datetime.datetime.today()
+        weekly_time = weekly_time.replace(hour=20, minute=00, second=00)
+        await channel.send(f"Weekly will be happening <t:{math.floor(weekly_time.timestamp())}:R> Don't forget to vote: *insert the vote link here*")
 
+@aiocron.crontab("0 20 * * sat,sun")
 async def weekly_message():
-    channel = bot.get_channel(1079926942456881204)
+    channel = bot.get_guild(SERVER_ID).get_channel_or_thread(WEEKLY_CHANNEL_ID)
     await channel.send("Weekly will be ")
-async def run_bot():
-    try:
-        await bot.start(config.TOKEN)
-    except KeyboardInterrupt:
-        await bot.close()
 
+bot.run(config.TOKEN)
 
-async def main():
-    await asyncio.gather(weekly(), run_bot())
-
-
-asyncio.run(main())
