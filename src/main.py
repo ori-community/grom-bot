@@ -5,7 +5,8 @@ from discord import option
 import datetime
 import aiocron
 
-from commands.seedgen import SeedgenParameters, OnlineOfflineStep, SeedgenWizard
+from controllers.seedgen import SeedgenParameters, OnlineOfflineStep, SeedgenWizard
+from controllers.weekly import WeeklyVoteController
 
 bot = discord.Bot()
 
@@ -35,9 +36,9 @@ async def weekly_reminder():
     print("the weekly message should be sent now")
     if bot.is_ready():
         channel = bot.get_guild(SERVER_ID).get_channel_or_thread(WEEKLY_CHANNEL_ID)
-        weekly_time = datetime.datetime.today()
-        weekly_time = weekly_time.replace(hour=20, minute=00, second=00)
-        await channel.send(f"Weekly will be happening <t:{math.floor(weekly_time.timestamp())}:R> Don't forget to vote: *insert the vote link here*")
+        await WeeklyVoteController.weeklyReminderMessage(channel)
+
+
 
 @aiocron.crontab("0 20 * * sat,sun")
 async def weekly_message():
