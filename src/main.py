@@ -29,22 +29,4 @@ async def roll_seed(ctx: discord.ApplicationContext, difficulty: str, online_mod
     await wizard.continue_wizard()
 
 
-async def weekly():
-    return
-    channel = bot.get_channel(1079926942456881204)
-    # if time.
-    await channel.send("Weekly will be ")
-
-
-async def run_bot():
-    try:
-        await bot.start(config.TOKEN)
-    except KeyboardInterrupt:
-        await bot.close()
-
-
-async def main():
-    await asyncio.gather(weekly(), run_bot())
-
-
-asyncio.run(main())
+bot.run(config.TOKEN)
